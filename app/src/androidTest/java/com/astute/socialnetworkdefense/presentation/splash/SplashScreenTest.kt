@@ -6,11 +6,14 @@ import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.astute.socialnetworkdefense.presentation.MainActivity
 import com.astute.socialnetworkdefense.presentation.ui.theme.SocialNetworkDefenseTheme
+import com.astute.socialnetworkdefense.presentation.util.Screen
+import com.astute.socialnetworkdefense.util.Constants
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,17 +29,20 @@ class SplashScreenTest {
     @RelaxedMockK
     lateinit var navController: NavController
 
+    private val testDispatcher = TestCoroutineDispatcher()
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
     }
 
     @Test
-    fun splashScreen_displaysAndDisappears() = runBlocking {
+    fun splashScreen_displaysAndDisappears() = testDispatcher.runBlockingTest {
         composeTestRule.setContent {
             SocialNetworkDefenseTheme {
                 SplashScreen(
                     navController = navController,
+                    dispatch = testDispatcher
                 )
             }
         }
@@ -44,5 +50,12 @@ class SplashScreenTest {
         composeTestRule
             .onNodeWithContentDescription("Logo")
             .assertExists()
+
+        advanceTimeBy(Constants.SPLASH_SCREEN_DURATION)
+
+        verify {
+            navController.popBackStack()
+            navController.navigate(Screen.LoginScreen.route)
+        }
     }
 }

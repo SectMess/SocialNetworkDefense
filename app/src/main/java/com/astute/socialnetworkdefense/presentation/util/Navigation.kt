@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.astute.socialnetworkdefense.presentation.MainFeedScreen
 import com.astute.socialnetworkdefense.presentation.login.LoginScreen
+import com.astute.socialnetworkdefense.presentation.register.RegisterScreen
 import com.astute.socialnetworkdefense.presentation.splash.SplashScreen
 
 @Composable
@@ -20,6 +22,14 @@ fun Navigation() {
 
         composable(Screen.LoginScreen.route){
             LoginScreen(navController = navController)
+        }
+
+        composable(Screen.RegisterScreen.route){
+            RegisterScreen(navController = navController)
+        }
+
+        composable(Screen.MainFeedScreen.route){
+            MainFeedScreen(navController = navController)
         }
     }
 

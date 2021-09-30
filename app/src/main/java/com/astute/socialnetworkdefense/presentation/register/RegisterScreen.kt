@@ -1,4 +1,4 @@
-package com.astute.socialnetworkdefense.presentation.login
+package com.astute.socialnetworkdefense.presentation.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,13 +18,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.presentation.components.StandardTextField
+import com.astute.socialnetworkdefense.presentation.login.LoginViewModel
 import com.astute.socialnetworkdefense.presentation.ui.theme.*
-import com.astute.socialnetworkdefense.presentation.util.Screen
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: RegisterViewModel = hiltViewModel(),
 ) {
     Box(
         modifier = Modifier
@@ -43,10 +43,21 @@ fun LoginScreen(
                 .padding(horizontal = SpaceMedium),
         ) {
             Text(
-                text = stringResource(R.string.login),
+                text = stringResource(R.string.register_new_account),
                 style = MaterialTheme.typography.h1,
             )
             Spacer(modifier = Modifier.height(SpaceSmall))
+
+            //Email Field
+            StandardTextField(
+                text = viewModel.emailText.value,
+                onValueChange = {
+                    viewModel.setEmailText(it)
+                },
+                hint = stringResource(R.string.email_hint),
+                error = viewModel.emailError.value,
+            )
+            Spacer(modifier = Modifier.height(SpaceMedium))
 
             //Username Field
             StandardTextField(
@@ -58,6 +69,8 @@ fun LoginScreen(
                 error = viewModel.usernameError.value,
             )
             Spacer(modifier = Modifier.height(SpaceMedium))
+
+
 
             //Password field
             StandardTextField(
@@ -77,13 +90,11 @@ fun LoginScreen(
 
             //Login Button
             Button(
-                onClick = {
-                          navController.navigate(Screen.MainFeedScreen.route)
-                },
+                onClick = {  },
                 modifier = Modifier.align(Alignment.End)
             ){
                 Text(
-                    text = stringResource(R.string.login),
+                    text = stringResource(R.string.register),
                     color = MaterialTheme.colors.onPrimary
                 )
             }
@@ -92,9 +103,9 @@ fun LoginScreen(
 
         Text(
             text = buildAnnotatedString {
-                append(stringResource(id = R.string.dont_have_an_account_yet))
+                append(stringResource(R.string.alread_have_account))
                 append(" ")
-                val signUpText = stringResource(id = R.string.sign_up)
+                val signUpText = stringResource(id = R.string.sign_in)
                 withStyle(
                     style = SpanStyle(
                         color = MaterialTheme.colors.primary
@@ -107,9 +118,9 @@ fun LoginScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .clickable {
-                    navController.navigate(Screen.RegisterScreen.route)
+                    navController.popBackStack()
                 }
 
-            )
+        )
     }
 }
