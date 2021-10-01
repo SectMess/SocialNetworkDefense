@@ -19,4 +19,5 @@
     <string name="read_more">Read More</string>
     <string name="liked_by_x_people">Liked by %d people</string>
     <string name="x_comments">%d comments</string>
+    <string name="make_post">Make Post</string>
 </resources>

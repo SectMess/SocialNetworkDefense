@@ -6,9 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.astute.socialnetworkdefense.presentation.components.StandardScaffold
 import com.astute.socialnetworkdefense.presentation.ui.theme.SocialNetworkDefenseTheme
 import com.astute.socialnetworkdefense.presentation.util.Navigation
+import com.astute.socialnetworkdefense.presentation.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,9 +24,26 @@ class MainActivity : ComponentActivity() {
             SocialNetworkDefenseTheme {
                 Surface(
                     color = MaterialTheme.colors.background,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Navigation()
+                    val navController = rememberNavController()
+                    //So that no need to recompose each time
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    StandardScaffold(
+                        navController = navController,
+                        showBottomBar = navBackStackEntry?.destination?.route in listOf(
+                            Screen.MainFeedScreen.route,
+                            Screen.ChatScreen.route,
+                            Screen.ActivityScreen.route,
+                            Screen.ProfileScreen.route,
+                        ),
+                        modifier = Modifier.fillMaxSize(),
+                        onFabClick = {
+                            navController.navigate(Screen.CreatePostScreen.route)
+                        }
+                    ) {
+                        Navigation(navController)
+                    }
                 }
             }
         }
