@@ -20,4 +20,7 @@
     <string name="liked_by_x_people">Liked by %d people</string>
     <string name="x_comments">%d comments</string>
     <string name="make_post">Make Post</string>
+    <string name="back">Back</string>
+    <string name="your_feed">Your Feed</string>
+    <string name="like">Like</string>
 </resources>

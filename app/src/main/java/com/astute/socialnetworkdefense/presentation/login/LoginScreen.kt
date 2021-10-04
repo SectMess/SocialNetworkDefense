@@ -56,7 +56,8 @@ fun LoginScreen(
                 },
                 hint = stringResource(R.string.login_hint),
                 error = viewModel.usernameError.value,
-            )
+                keyboardType = KeyboardType.Email,
+                )
             Spacer(modifier = Modifier.height(SpaceMedium))
 
             //Password field

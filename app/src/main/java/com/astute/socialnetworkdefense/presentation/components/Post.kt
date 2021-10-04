@@ -33,30 +33,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.domain.models.Post
-import com.astute.socialnetworkdefense.presentation.ui.theme.HintGray
-import com.astute.socialnetworkdefense.presentation.ui.theme.MediumGray
-import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceMedium
-import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceSmall
+import com.astute.socialnetworkdefense.presentation.ui.theme.*
 import com.astute.socialnetworkdefense.util.Constants
 
 @Composable
 fun Post(
     post: Post,
     profilePictureSize: Dp = 60.dp,
+    onPostClick: ()-> Unit = {}
 ) {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(SpaceMedium)
+
     ){
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(y = profilePictureSize / 2f)
+                .offset(y = ProfilePictureSize / 2f)
                 .clip(MaterialTheme.shapes.medium)
                 .shadow(5.dp)
                 .background(MediumGray)
+                .clickable {
+                    onPostClick()
+                }
         ) {
 
             //Post Image
@@ -130,7 +130,7 @@ fun Post(
             painterResource(id = R.drawable.explosion),
             contentDescription = "Profile Picture",
             modifier = Modifier
-                .size(profilePictureSize)
+                .size(ProfilePictureSize)
                 .clip(CircleShape)
                 .align(Alignment.TopEnd)
         )
