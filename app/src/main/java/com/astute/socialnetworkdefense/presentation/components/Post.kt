@@ -39,8 +39,9 @@ import com.astute.socialnetworkdefense.util.Constants
 @Composable
 fun Post(
     post: Post,
-    profilePictureSize: Dp = 60.dp,
-    onPostClick: ()-> Unit = {}
+    modifier: Modifier = Modifier,
+    showProfileImage: Boolean = true,
+    onPostClick: () -> Unit = {}
 ) {
 
     Box(

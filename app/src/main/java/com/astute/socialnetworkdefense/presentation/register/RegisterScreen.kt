@@ -81,7 +81,7 @@ fun RegisterScreen(
                 hint = stringResource(R.string.password_hint),
                 error = viewModel.passwordError.value,
                 keyboardType = KeyboardType.Password,
-                showPasswordToggle = viewModel.showPassword.value,
+                isPasswordVisible = viewModel.showPassword.value,
                 onPasswordToggleClick = {
                     viewModel.setShowPassword(it)
                 }

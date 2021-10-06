@@ -10,9 +10,11 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -28,11 +30,17 @@ fun StandardTextField(
     hint: String = "",
     maxLength: Int = 40,
     error: String = "",
+    style: TextStyle = TextStyle(
+        color = MaterialTheme.colors.onBackground
+    ),
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    leadingIcon: ImageVector? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     isPasswordToggleDisplayed: Boolean = keyboardType == KeyboardType.Password,
-    showPasswordToggle: Boolean = false,
-    onPasswordToggleClick: (Boolean)-> Unit = {},
-    onValueChange: (String)-> Unit,
+    isPasswordVisible: Boolean = false,
+    onPasswordToggleClick: (Boolean) -> Unit = {},
+    onValueChange: (String) -> Unit
 ) {
 
     Column(
@@ -56,7 +64,7 @@ fun StandardTextField(
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType
             ),
-            visualTransformation = if (!showPasswordToggle && isPasswordToggleDisplayed) {
+            visualTransformation = if (!isPasswordVisible && isPasswordToggleDisplayed) {
                 PasswordVisualTransformation()
             } else {
                 VisualTransformation.None
@@ -66,7 +74,7 @@ fun StandardTextField(
                 if (isPasswordToggleDisplayed) {
                     IconButton(
                         onClick = {
-                            onPasswordToggleClick(!showPasswordToggle)
+                            onPasswordToggleClick(!isPasswordVisible)
                         },
                         modifier = Modifier
                             .semantics {
@@ -74,13 +82,13 @@ fun StandardTextField(
                             }
                     ) {
                         Icon(
-                            imageVector = if (showPasswordToggle) {
+                            imageVector = if (isPasswordVisible) {
                                 Icons.Filled.VisibilityOff
                             } else {
                                 Icons.Filled.Visibility
                             },
                             tint = Color.White,
-                            contentDescription = if (showPasswordToggle) {
+                            contentDescription = if (isPasswordVisible) {
                                 stringResource(id = R.string.password_visible_content_description)
                             } else {
                                 stringResource(id = R.string.password_hidden_content_description)
