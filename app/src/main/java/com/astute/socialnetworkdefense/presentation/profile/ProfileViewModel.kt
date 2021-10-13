@@ -16,11 +16,11 @@ class ProfileViewModel @Inject constructor(
 
     fun setExpandedRatio(ratio: Float) {
         _toolbarState.value = _toolbarState.value.copy(expandedRatio = ratio)
-        println("UPDATING TOOLBAR STATE TO $toolbarState")
+        //println("UPDATING TOOLBAR STATE TO $toolbarState")
     }
 
     fun setToolbarOffsetY(value: Float) {
         _toolbarState.value = _toolbarState.value.copy(toolbarOffsetY = value)
-        println("UPDATING TOOLBAR STATE TO $toolbarState")
+        //println("UPDATING TOOLBAR STATE TO $toolbarState")
     }
 }

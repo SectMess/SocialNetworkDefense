@@ -51,4 +51,8 @@
     <string name="search">Search</string>
     <string name="liked_by">Liked By</string>
     <string name="followed_you">Followed You</string>
+    <string name="this_field_cant_be_empty">Field cannot be empty</string>
+    <string name="not_a_valid_email">Not a valid email address</string>
+    <string name="input_too_short">Minimum length is %d</string>
+    <string name="invalid_password">Password needs to contain at least one uppercase letter and one number</string>
 </resources>
