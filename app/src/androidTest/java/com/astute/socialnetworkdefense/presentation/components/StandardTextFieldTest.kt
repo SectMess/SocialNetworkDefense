@@ -15,9 +15,9 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.astute.socialnetworkdefense.presentation.MainActivity
-import com.astute.socialnetworkdefense.presentation.util.TestTags.PASSWORD_TOGGLE
-import com.astute.socialnetworkdefense.presentation.util.TestTags.STANDARD_TEXT_FIELD
+import com.astute.socialnetworkdefense.core.presentation.MainActivity
+import com.astute.socialnetworkdefense.core.util.TestTags.PASSWORD_TOGGLE
+import com.astute.socialnetworkdefense.core.util.TestTags.STANDARD_TEXT_FIELD
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

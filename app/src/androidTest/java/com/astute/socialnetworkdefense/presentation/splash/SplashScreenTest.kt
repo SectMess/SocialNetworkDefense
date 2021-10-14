@@ -4,10 +4,10 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.astute.socialnetworkdefense.presentation.MainActivity
+import com.astute.socialnetworkdefense.core.presentation.MainActivity
 import com.astute.socialnetworkdefense.presentation.ui.theme.SocialNetworkDefenseTheme
-import com.astute.socialnetworkdefense.presentation.util.Screen
-import com.astute.socialnetworkdefense.util.Constants
+import com.astute.socialnetworkdefense.core.util.Screen
+import com.astute.socialnetworkdefense.core.util.Constants
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
