@@ -10,6 +10,7 @@ import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.states.PasswordTextFieldState
 import com.astute.socialnetworkdefense.core.util.Constants
 import com.astute.socialnetworkdefense.core.util.Resource
+import com.astute.socialnetworkdefense.core.util.UiEvent
 import com.astute.socialnetworkdefense.core.util.UiText
 import com.astute.socialnetworkdefense.feature_auth.domain.use_case.RegisterUseCase
 import com.astute.socialnetworkdefense.feature_auth.presentation.util.AuthError
@@ -117,11 +118,5 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
-
-    sealed class UiEvent {
-        data class SnackbarEvent(val uiText: UiText): UiEvent()
-    }
-
-
 
 }
