@@ -1,9 +1,9 @@
-package com.astute.socialnetworkdefense.feature_auth.data.data_source.remote
+package com.astute.socialnetworkdefense.feature_auth.data.data.remote
 
 import com.astute.socialnetworkdefense.core.data.dto.response.BasicApiResponse
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.request.CreateAccountRequest
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.request.LoginRequest
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.response.AuthResponse
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.request.CreateAccountRequest
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.request.LoginRequest
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.response.AuthResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

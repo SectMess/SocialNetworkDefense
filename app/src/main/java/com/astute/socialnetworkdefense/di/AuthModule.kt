@@ -1,7 +1,7 @@
 package com.astute.socialnetworkdefense.di
 
 import android.content.SharedPreferences
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.AuthApi
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.AuthApi
 import com.astute.socialnetworkdefense.feature_auth.data.repository.AuthRepositoryImpl
 import com.astute.socialnetworkdefense.feature_auth.domain.repository.AuthRepository
 import com.astute.socialnetworkdefense.feature_auth.domain.use_case.AuthenticateUseCase

@@ -1,6 +1,5 @@
 package com.astute.socialnetworkdefense.feature_post.data.repository
 
-import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.paging.Pager
@@ -10,20 +9,15 @@ import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.*
-import com.astute.socialnetworkdefense.feature_post.data.data_source.remote.PostApi
-import com.astute.socialnetworkdefense.feature_post.data.data_source.remote.request.CreatePostRequest
+import com.astute.socialnetworkdefense.feature_post.data.data.remote.PostApi
+import com.astute.socialnetworkdefense.feature_post.data.data.remote.request.CreatePostRequest
 import com.astute.socialnetworkdefense.feature_post.data.paging.PostSource
 import com.astute.socialnetworkdefense.feature_post.domain.repository.PostRepository
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.IOException
 
 class PostRepositoryImpl(

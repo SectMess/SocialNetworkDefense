@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.util.Constants
-import com.astute.socialnetworkdefense.feature_post.data.data_source.remote.PostApi
+import com.astute.socialnetworkdefense.feature_post.data.data.remote.PostApi
 import retrofit2.HttpException
 import java.io.IOException
 

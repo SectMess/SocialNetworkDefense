@@ -61,4 +61,7 @@
     <string name="success_registration">Sucessful Registration</string>
     <string name="error_file_not_found">File not found!</string>
     <string name="post_image">Post Image</string>
+    <string name="error_no_image_picked">Please select an image</string>
+    <string name="error_description_blank">Description is blank</string>
+    <string name="post_created">Post Successfully Created</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.User
+import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.presentation.components.StandardTextField
 import com.astute.socialnetworkdefense.presentation.components.StandardToolbar
 import com.astute.socialnetworkdefense.presentation.components.UserProfileItem
@@ -28,14 +29,15 @@ import com.astute.socialnetworkdefense.presentation.util.states.StandardTextFiel
 @ExperimentalMaterialApi
 @Composable
 fun SearchScreen(
-    navController: NavController,
+    onNavigate: (String) -> Unit = {},
+    onNavigateUp: () -> Unit = {},
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         StandardToolbar(
-            navController = navController,
+            onNavigateUp = onNavigateUp,
             showBackArrow = true,
             title = {
                 Text(
@@ -70,6 +72,7 @@ fun SearchScreen(
                 items(10) {
                     UserProfileItem(
                         user = User(
+                            userId = "615ef4c928959a41f3a89ca2",
                             profilePictureUrl = "",
                             username = "Test Astute",
                             description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\n" +
@@ -86,6 +89,12 @@ fun SearchScreen(
                                 tint = MaterialTheme.colors.onBackground,
                                 modifier = Modifier.size(IconSizeMedium)
                             )
+                        },
+                        onItemClick = {
+                            onNavigate(
+                                Screen.ProfileScreen.route + "?userId=616ab8eeddc6e878cd062c96"
+                            )
+
                         }
                     )
                     Spacer(modifier = Modifier.height(SpaceMedium))

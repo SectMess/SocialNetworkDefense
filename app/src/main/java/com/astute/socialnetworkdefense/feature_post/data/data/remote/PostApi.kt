@@ -1,4 +1,4 @@
-package com.astute.socialnetworkdefense.feature_post.data.data_source.remote
+package com.astute.socialnetworkdefense.feature_post.data.data.remote
 
 import com.astute.socialnetworkdefense.core.data.dto.response.BasicApiResponse
 import com.astute.socialnetworkdefense.core.domain.models.Post

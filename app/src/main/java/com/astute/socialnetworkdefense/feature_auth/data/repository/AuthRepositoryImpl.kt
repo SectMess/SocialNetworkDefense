@@ -6,9 +6,9 @@ import com.astute.socialnetworkdefense.core.util.Constants
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.SimpleResource
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.request.CreateAccountRequest
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.request.LoginRequest
-import com.astute.socialnetworkdefense.feature_auth.data.data_source.remote.AuthApi
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.request.CreateAccountRequest
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.request.LoginRequest
+import com.astute.socialnetworkdefense.feature_auth.data.data.remote.AuthApi
 import com.astute.socialnetworkdefense.feature_auth.domain.repository.AuthRepository
 import retrofit2.HttpException
 import java.io.IOException
