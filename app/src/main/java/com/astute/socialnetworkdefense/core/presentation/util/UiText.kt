@@ -1,4 +1,4 @@
-package com.astute.socialnetworkdefense.core.util
+package com.astute.socialnetworkdefense.core.presentation.util
 
 import androidx.annotation.StringRes
 import com.astute.socialnetworkdefense.R
@@ -9,7 +9,7 @@ sealed class UiText {
 
     companion object {
         fun unknownError(): UiText {
-            return UiText.StringResource(R.string.error_unknown)
+            return StringResource(R.string.error_unknown)
         }
     }
 }

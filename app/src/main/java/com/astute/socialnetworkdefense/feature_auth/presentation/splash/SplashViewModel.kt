@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.Screen
-import com.astute.socialnetworkdefense.core.util.UiEvent
+import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
 import com.astute.socialnetworkdefense.feature_auth.domain.use_case.AuthenticateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

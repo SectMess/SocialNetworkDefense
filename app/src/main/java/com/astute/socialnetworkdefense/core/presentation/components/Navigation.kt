@@ -53,7 +53,7 @@ fun Navigation(
         }
 
         composable(Screen.MainFeedScreen.route){
-            MainFeedScreen(navController = navController)
+            MainFeedScreen(navController = navController, scaffoldState)
         }
 
         composable(Screen.ChatScreen.route) {

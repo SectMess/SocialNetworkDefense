@@ -1,4 +1,4 @@
-package com.astute.socialnetworkdefense.core.util
+package com.astute.socialnetworkdefense.core.presentation.util
 
 sealed class UiEvent {
     data class SnackbarEvent(val uiText: UiText) : UiEvent()

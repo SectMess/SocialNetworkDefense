@@ -20,7 +20,7 @@ import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.presentation.components.StandardTextField
 import com.astute.socialnetworkdefense.presentation.ui.theme.*
 import com.astute.socialnetworkdefense.core.util.Constants
-import com.astute.socialnetworkdefense.core.util.UiEvent
+import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
 import com.astute.socialnetworkdefense.core.util.asString
 import com.astute.socialnetworkdefense.feature_auth.presentation.util.AuthError
 import kotlinx.coroutines.flow.collectLatest

@@ -1,5 +1,7 @@
 package com.astute.socialnetworkdefense.core.util
 
+import com.astute.socialnetworkdefense.core.presentation.util.UiText
+
 typealias SimpleResource = Resource<Unit>
 
 sealed class Resource<T>(val data: T? = null, val uiText: UiText? = null) {

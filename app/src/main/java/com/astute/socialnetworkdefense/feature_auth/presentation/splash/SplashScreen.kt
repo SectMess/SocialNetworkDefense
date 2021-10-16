@@ -16,13 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.astute.socialnetworkdefense.R
-import com.astute.socialnetworkdefense.core.util.Screen
-import com.astute.socialnetworkdefense.core.util.Constants
-import com.astute.socialnetworkdefense.core.util.UiEvent
+import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
 import com.astute.socialnetworkdefense.feature_auth.presentation.splash.SplashViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 

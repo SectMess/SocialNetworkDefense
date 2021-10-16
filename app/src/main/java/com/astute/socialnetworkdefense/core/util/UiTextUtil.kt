@@ -3,6 +3,7 @@ package com.astute.socialnetworkdefense.core.util
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.astute.socialnetworkdefense.core.presentation.util.UiText
 
 @Composable
 fun UiText.asString(): String {

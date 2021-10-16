@@ -1,5 +1,8 @@
 package com.astute.socialnetworkdefense.feature_post.presentation.create_post
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,12 +13,17 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.astute.socialnetworkdefense.R
+import com.astute.socialnetworkdefense.core.presentation.util.CropActivityResultContract
 import com.astute.socialnetworkdefense.feature_post.presentation.util.PostDescriptionError
 import com.astute.socialnetworkdefense.presentation.components.StandardTextField
 import com.astute.socialnetworkdefense.presentation.components.StandardToolbar
@@ -29,6 +37,19 @@ fun CreatePostScreen(
     navController: NavController,
     viewModel: CreatePostViewModel = hiltViewModel()
 ) {
+    val imageUri = viewModel.chosenImageUri.value
+
+    val cropActivityLauncher = rememberLauncherForActivityResult(
+        contract = CropActivityResultContract()
+    ) {
+        viewModel.onEvent(CreatePostEvent.CropImage(it))
+    }
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        cropActivityLauncher.launch(it)
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -52,13 +73,14 @@ fun CreatePostScreen(
                 modifier = Modifier
                     .aspectRatio(16f / 9f)
                     .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.medium)
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colors.onBackground,
                         shape = MaterialTheme.shapes.medium
                     )
                     .clickable {
-
+                        galleryLauncher.launch("image/*")
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -67,6 +89,17 @@ fun CreatePostScreen(
                     contentDescription = stringResource(id = R.string.choose_image),
                     tint = MaterialTheme.colors.onBackground
                 )
+                imageUri?.let { uri ->
+                    Image(
+                        painter = rememberImagePainter(
+                            request = ImageRequest.Builder(LocalContext.current)
+                                .data(uri)
+                                .build()
+                        ),
+                        contentDescription = stringResource(id = R.string.post_image),
+                        modifier = Modifier.matchParentSize()
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(SpaceMedium))
             StandardTextField(
@@ -81,14 +114,16 @@ fun CreatePostScreen(
                 singleLine = false,
                 maxLines = 5,
                 onValueChange = {
-                    viewModel.setDescriptionState(
-                        StandardTextFieldState(text = it)
+                    viewModel.onEvent(
+                        CreatePostEvent.EnterDescription(it)
                     )
                 }
             )
             Spacer(modifier = Modifier.height(SpaceLarge))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    viewModel.onEvent(CreatePostEvent.PostImage)
+                },
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text(

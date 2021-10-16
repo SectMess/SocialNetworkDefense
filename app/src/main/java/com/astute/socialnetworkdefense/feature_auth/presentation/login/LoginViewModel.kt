@@ -6,10 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.Screen
-import com.astute.socialnetworkdefense.core.util.UiEvent
-import com.astute.socialnetworkdefense.core.util.UiText
+import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
+import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.feature_auth.domain.use_case.LoginUseCase
-import com.astute.socialnetworkdefense.feature_auth.presentation.register.RegisterViewModel
 import com.astute.socialnetworkdefense.presentation.util.states.StandardTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

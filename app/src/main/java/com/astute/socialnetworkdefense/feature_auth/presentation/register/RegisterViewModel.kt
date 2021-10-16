@@ -1,19 +1,16 @@
 package com.astute.socialnetworkdefense.feature_auth.presentation.register
 
 
-import android.util.Patterns
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.states.PasswordTextFieldState
-import com.astute.socialnetworkdefense.core.util.Constants
 import com.astute.socialnetworkdefense.core.util.Resource
-import com.astute.socialnetworkdefense.core.util.UiEvent
-import com.astute.socialnetworkdefense.core.util.UiText
+import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
+import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.feature_auth.domain.use_case.RegisterUseCase
-import com.astute.socialnetworkdefense.feature_auth.presentation.util.AuthError
 import com.astute.socialnetworkdefense.presentation.util.states.StandardTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

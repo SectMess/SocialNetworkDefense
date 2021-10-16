@@ -2,7 +2,7 @@
     <string name="app_name">SocialNetworkDefense</string>
     <string name="login">Login</string>
     <string name="password_hint">Password</string>
-    <string name="login_hint">Username</string>
+    <string name="login_hint">Email</string>
     <string name="email_hint">E-Mail</string>
     <string name="password_visible_content_description">Hide password</string>
     <string name="password_hidden_content_description">Show password</string>
@@ -59,4 +59,6 @@
     <string name="error_couldnt_reach_server">Could not reach server</string>
     <string name="oops_something_went_wrong">Hmm...something went wrong</string>
     <string name="success_registration">Sucessful Registration</string>
+    <string name="error_file_not_found">File not found!</string>
+    <string name="post_image">Post Image</string>
 </resources>
