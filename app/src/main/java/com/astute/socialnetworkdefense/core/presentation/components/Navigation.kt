@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import coil.annotation.ExperimentalCoilApi
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.presentation.MainFeedScreen
@@ -25,6 +26,7 @@ import com.astute.socialnetworkdefense.feature_auth.presentation.register.Regist
 import com.astute.socialnetworkdefense.feature_profile.presentation.search.SearchScreen
 import com.astute.socialnetworkdefense.presentation.splash.SplashScreen
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun Navigation(
@@ -104,10 +106,18 @@ fun Navigation(
             )
         }
 
-        composable(Screen.EditProfileScreen.route) {
+        composable(
+            Screen.EditProfileScreen.route + "/{userId}",
+            arguments = listOf(
+                navArgument(name = "userId") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
             EditProfileScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
+                scaffoldState = scaffoldState
             )
         }
 

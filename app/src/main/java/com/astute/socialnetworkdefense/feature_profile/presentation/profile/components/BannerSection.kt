@@ -10,15 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import coil.decode.SvgDecoder
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceSmall
 import com.astute.socialnetworkdefense.core.util.toPx
+import com.astute.socialnetworkdefense.feature_profile.domain.model.Skill
 
 @ExperimentalCoilApi
 @Composable
@@ -29,7 +33,7 @@ fun BannerSection(
     leftIconModifier: Modifier = Modifier,
     rightIconModifier: Modifier = Modifier,
     bannerUrl: String? = null,
-    topSkillUrls: List<String> = emptyList(),
+    topSkills: List<Skill> = emptyList(),
     shouldShowGitHub: Boolean = false,
     shouldShowInstagram: Boolean = false,
     shouldShowLinkedIn: Boolean = false,
@@ -71,11 +75,16 @@ fun BannerSection(
                 .align(Alignment.BottomStart)
                 .padding(SpaceSmall)
         ) {
-            topSkillUrls.forEach { skillUrl ->
+            topSkills.forEach { skill ->
                 Spacer(modifier = Modifier.width(SpaceSmall))
                 Image(
                     painter = rememberImagePainter(
-                        data = skillUrl,
+                        data = skill.imageUrl,
+                        imageLoader = ImageLoader.Builder(LocalContext.current)
+                            .componentRegistry {
+                                add(SvgDecoder(LocalContext.current))
+                            }
+                            .build(),
                         builder = {
                             crossfade(true)
                         }
