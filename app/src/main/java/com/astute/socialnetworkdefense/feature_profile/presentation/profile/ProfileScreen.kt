@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.collectLatest
 @ExperimentalCoilApi
 @Composable
 fun ProfileScreen(
+    userId: String,
     onNavigate: (String) -> Unit = {},
     onNavigateUp: () -> Unit = {},
     scaffoldState: ScaffoldState,
@@ -84,14 +85,16 @@ fun ProfileScreen(
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y
-                if(delta > 0f && lazyListState.firstVisibleItemIndex != 0) {
+                if (delta > 0f && lazyListState.firstVisibleItemIndex != 0) {
                     return Offset.Zero
                 }
                 val newOffset = viewModel.toolbarState.value.toolbarOffsetY + delta
-                viewModel.setToolbarOffsetY(newOffset.coerceIn(
-                    minimumValue = -maxOffset.toPx(),
-                    maximumValue = 0f
-                ))
+                viewModel.setToolbarOffsetY(
+                    newOffset.coerceIn(
+                        minimumValue = -maxOffset.toPx(),
+                        maximumValue = 0f
+                    )
+                )
                 viewModel.setExpandedRatio((viewModel.toolbarState.value.toolbarOffsetY + maxOffset.toPx()) / maxOffset.toPx())
                 return Offset.Zero
             }
@@ -100,8 +103,9 @@ fun ProfileScreen(
 
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
+        viewModel.getProfile(userId)
         viewModel.eventFlow.collectLatest { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.uiText.asString(context)
@@ -109,6 +113,7 @@ fun ProfileScreen(
                 }
             }
         }
+
     }
 
     Box(
@@ -122,9 +127,11 @@ fun ProfileScreen(
             state = lazyListState
         ) {
             item {
-                Spacer(modifier = Modifier.height(
-                    toolbarHeightExpanded - profilePictureSize / 2f
-                ))
+                Spacer(
+                    modifier = Modifier.height(
+                        toolbarHeightExpanded - profilePictureSize / 2f
+                    )
+                )
             }
             item {
                 state.profile?.let { profile ->
@@ -152,7 +159,7 @@ fun ProfileScreen(
                 )
                 Post(
                     post = Post(
-                        username = "Test Astute",
+                        username = "Philipp Lackner",
                         imageUrl = "",
                         profilePictureUrl = "",
                         description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\n" +
@@ -229,6 +236,7 @@ fun ProfileScreen(
                 )
             }
         }
-
     }
+
+
 }

@@ -56,7 +56,7 @@ class ProfileRepositoryImpl(
                 bannerImage = bannerFile?.let {
                     MultipartBody.Part
                         .createFormData(
-                            "banner_image",
+                            "banner_pictures",
                             bannerFile.name,
                             bannerFile.asRequestBody()
                         )

@@ -84,10 +84,7 @@ fun BannerSection(
                             .componentRegistry {
                                 add(SvgDecoder(LocalContext.current))
                             }
-                            .build(),
-                        builder = {
-                            crossfade(true)
-                        }
+                            .build()
                     ),
                     contentDescription = null,
                     modifier = Modifier.height(iconSize)
