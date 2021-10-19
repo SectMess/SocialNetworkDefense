@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.astute.socialnetworkdefense.core.domain.use_case.GetOwnUserIdUseCase
 import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.Resource
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases,
+    private val getOwnUserId: GetOwnUserIdUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -30,11 +33,9 @@ class ProfileViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-//    init {
-//        savedStateHandle.get<String>("userId")?.let { userId ->
-//            getProfile(userId)
-//        }
-//    }
+    val posts = profileUseCases.getPostsForProfile(
+        savedStateHandle.get<String>("userId") ?: getOwnUserId()
+    ).cachedIn(viewModelScope)
 
     fun setExpandedRatio(ratio: Float) {
         _toolbarState.value = _toolbarState.value.copy(expandedRatio = ratio)
@@ -44,7 +45,6 @@ class ProfileViewModel @Inject constructor(
         _toolbarState.value = _toolbarState.value.copy(toolbarOffsetY = value)
     }
 
-
     fun onEvent(event: ProfileEvent) {
         when(event) {
             is ProfileEvent.GetProfile -> {
@@ -53,12 +53,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun getProfile(userId: String) {
+    fun getProfile(userId: String?) {
         viewModelScope.launch {
             _state.value = state.value.copy(
                 isLoading = true
             )
-            val result = profileUseCases.getProfile(userId)
+            val result = profileUseCases.getProfile(
+                userId ?: getOwnUserId()
+            )
             when(result) {
                 is Resource.Success -> {
                     _state.value = state.value.copy(
@@ -77,5 +79,4 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-
 }

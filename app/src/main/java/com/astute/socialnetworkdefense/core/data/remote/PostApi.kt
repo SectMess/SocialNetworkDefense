@@ -1,4 +1,4 @@
-package com.astute.socialnetworkdefense.feature_post.data.data.remote
+package com.astute.socialnetworkdefense.core.data.remote
 
 import com.astute.socialnetworkdefense.core.data.dto.response.BasicApiResponse
 import com.astute.socialnetworkdefense.core.domain.models.Post
@@ -9,6 +9,13 @@ interface PostApi {
 
     @GET("/api/post/get")
     suspend fun getPostsForFollows(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
+    ): List<Post>
+
+    @GET("/api/user/posts")
+    suspend fun getPostsForProfile(
+        @Query("userId") userId: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int
     ): List<Post>

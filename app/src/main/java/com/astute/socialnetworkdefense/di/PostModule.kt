@@ -1,6 +1,6 @@
 package com.astute.socialnetworkdefense.di
 
-import com.astute.socialnetworkdefense.feature_post.data.data.remote.PostApi
+import com.astute.socialnetworkdefense.core.data.remote.PostApi
 import com.astute.socialnetworkdefense.feature_post.data.repository.PostRepositoryImpl
 import com.astute.socialnetworkdefense.feature_post.domain.repository.PostRepository
 import com.astute.socialnetworkdefense.feature_post.domain.use_case.CreatePostUseCase

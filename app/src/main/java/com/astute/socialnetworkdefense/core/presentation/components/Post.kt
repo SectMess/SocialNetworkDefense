@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -30,11 +30,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.presentation.ui.theme.*
 import com.astute.socialnetworkdefense.core.util.Constants
 
+@ExperimentalCoilApi
 @Composable
 fun Post(
     post: Post,
@@ -61,8 +64,33 @@ fun Post(
 
             //Post Image
             Image(
-                painterResource(id = R.drawable.explosion),
-                contentDescription = "Post Image",
+//                painterResource(id = R.drawable.explosion),
+//                contentDescription = "Post Image",
+                painter = rememberImagePainter(
+                    data = post.imageUrl,
+                    builder = {
+                        crossfade(true)
+                        listener(
+                            onStart = { _ ->
+                                println("START LOADING IMAGE")
+                            },
+                            onSuccess = { _, _ ->
+                                println("SUCCESS LOADING IMAGE")
+                            },
+                            onCancel = {
+                                println("REQUEST CANCELED")
+                            },
+                            onError = { _, t ->
+                                println("ERROR LOADING IMAGE")
+                                t.printStackTrace()
+                            }
+                        )
+                        error(R.drawable.channelart)
+                        placeholder(R.drawable.explosion)
+                    }
+                ),
+                contentDescription = "Post image",
+                contentScale = ContentScale.Crop
             )
 
             Column(
@@ -126,14 +154,21 @@ fun Post(
             }
         }
 
-        Image(
-            painterResource(id = R.drawable.explosion),
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(ProfilePictureSize)
-                .clip(CircleShape)
-                .align(Alignment.TopEnd)
-        )
+        if (showProfileImage) {
+            Image(
+                painter = rememberImagePainter(
+                    data = post.profilePictureUrl,
+                    builder = {
+                        crossfade(true)
+                    }
+                ),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .size(ProfilePictureSizeMedium)
+                    .clip(CircleShape)
+                    .align(Alignment.TopCenter)
+            )
+        }
     }
 
 }

@@ -23,19 +23,18 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.domain.models.User
 import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
-import com.astute.socialnetworkdefense.presentation.components.Post
 import com.astute.socialnetworkdefense.presentation.profile.components.BannerSection
 import com.astute.socialnetworkdefense.presentation.profile.components.ProfileHeaderSection
 import com.astute.socialnetworkdefense.presentation.ui.theme.ProfilePictureSizeLarge
@@ -44,18 +43,20 @@ import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceSmall
 import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.core.util.asString
 import com.astute.socialnetworkdefense.core.util.toPx
+import com.astute.socialnetworkdefense.presentation.components.Post
 import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalCoilApi
 @Composable
 fun ProfileScreen(
-    userId: String,
+    scaffoldState: ScaffoldState,
+    userId: String? = null,
     onNavigate: (String) -> Unit = {},
     onNavigateUp: () -> Unit = {},
-    scaffoldState: ScaffoldState,
     profilePictureSize: Dp = ProfilePictureSizeLarge,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val posts = viewModel.posts.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
     val toolbarState = viewModel.toolbarState.value
 
@@ -152,21 +153,20 @@ fun ProfileScreen(
                     )
                 }
             }
-            items(20) {
+
+            items(posts){ post ->
                 Spacer(
                     modifier = Modifier
                         .height(SpaceMedium)
                 )
                 Post(
                     post = Post(
-                        username = "Philipp Lackner",
-                        imageUrl = "",
-                        profilePictureUrl = "",
-                        description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\n" +
-                                "diam nonumy eirmod tempor invidunt ut labore et dolore \n" +
-                                "magna aliquyam erat, sed diam voluptua...",
-                        likeCount = 17,
-                        commentCount = 7,
+                        username = post?.username ?: "",
+                        imageUrl = post?.imageUrl ?: "",
+                        profilePictureUrl = post?.profilePictureUrl ?: "",
+                        description = post?.description ?: "",
+                        likeCount = post?.likeCount ?: 0,
+                        commentCount = post?.commentCount ?: 0,
                     ),
                     showProfileImage = false,
                     onPostClick = {

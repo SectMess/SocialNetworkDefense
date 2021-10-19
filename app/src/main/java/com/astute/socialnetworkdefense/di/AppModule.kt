@@ -3,6 +3,7 @@ package com.astute.socialnetworkdefense.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.astute.socialnetworkdefense.core.domain.use_case.GetOwnUserIdUseCase
 import com.astute.socialnetworkdefense.core.util.Constants
 import com.google.gson.Gson
 import dagger.Module
@@ -33,9 +34,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(token: String): OkHttpClient {
+    fun provideOkHttpClient(sharedPreferences: SharedPreferences): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor {
+                val token = sharedPreferences.getString(Constants.KEY_JWT_TOKEN, "")
                 val modifiedRequest = it.request().newBuilder()
                     .addHeader("Authorization", "Bearer $token")
                     .build()
@@ -48,5 +50,11 @@ object AppModule {
     @Singleton
     fun provideGson(): Gson {
         return Gson()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetOwnUserIdUseCase(sharedPreferences: SharedPreferences): GetOwnUserIdUseCase {
+        return GetOwnUserIdUseCase(sharedPreferences)
     }
 }

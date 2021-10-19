@@ -9,7 +9,7 @@ import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.*
-import com.astute.socialnetworkdefense.feature_post.data.data.remote.PostApi
+import com.astute.socialnetworkdefense.core.data.remote.PostApi
 import com.astute.socialnetworkdefense.feature_post.data.data.remote.request.CreatePostRequest
 import com.astute.socialnetworkdefense.feature_post.data.paging.PostSource
 import com.astute.socialnetworkdefense.feature_post.domain.repository.PostRepository
@@ -27,7 +27,7 @@ class PostRepositoryImpl(
 
     override val posts: Flow<PagingData<Post>>
         get() = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE_POSTS)) {
-            PostSource(api)
+            PostSource(api, PostSource.Source.Follows)
         }.flow
 
     override suspend fun createPost(
