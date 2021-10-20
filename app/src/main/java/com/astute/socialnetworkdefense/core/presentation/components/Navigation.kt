@@ -15,7 +15,7 @@ import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.presentation.MainFeedScreen
 import com.astute.socialnetworkdefense.presentation.PersonListScreen
-import com.astute.socialnetworkdefense.feature_activity.presentation.activity.ActivityScreen
+import com.astute.socialnetworkdefense.feature_activity.presentation.ActivityScreen
 import com.astute.socialnetworkdefense.presentation.chat.ChatScreen
 import com.astute.socialnetworkdefense.feature_post.presentation.create_post.CreatePostScreen
 import com.astute.socialnetworkdefense.feature_profile.presentation.edit_profile.EditProfileScreen
@@ -136,25 +136,21 @@ fun Navigation(
             )
         }
 
-        composable(Screen.PostDetailScreen.route) {
+        composable(
+            route = Screen.PostDetailScreen.route + "/{postId}",
+            arguments = listOf(
+                navArgument(
+                    name = "postId"
+                ) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
             PostDetailScreen(
                 onNavigateUp = navController::navigateUp,
-                onNavigate = navController::navigate,
-                post = Post(
-                    username = "Philipp Lackner",
-                    imageUrl = "",
-                    profilePictureUrl = "",
-                    description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\n" +
-                            "diam nonumy eirmod tempor invidunt ut labore et dolore \n" +
-                            "magna aliquyam erat, sed diam voluptua Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\\n\" +\n" +
-                            "                    \"diam nonumy eirmod tempor invidunt ut labore et dolore \\n\" +\n" +
-                            "                    \"magna aliquyam erat, sed diam voluptua",
-                    likeCount = 17,
-                    commentCount = 7
-                )
+                onNavigate = navController::navigate
             )
         }
 
     }
-
 }

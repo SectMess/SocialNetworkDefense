@@ -72,4 +72,5 @@
     <string name="error_invalid_github_url">Error! Invalid Github url</string>
     <string name="error_invalid_instagram_url">Error! Invalid Instagram url</string>
     <string name="error_invalid_linkedin_url">Error! Invalid Linkedin url</string>
+    <string name="your_comment">Your Comment</string>
 </resources>
