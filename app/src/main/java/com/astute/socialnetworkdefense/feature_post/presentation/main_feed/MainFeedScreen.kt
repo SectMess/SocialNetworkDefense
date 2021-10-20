@@ -65,13 +65,14 @@ fun MainFeedScreen(
             }
         )
         Box(modifier = Modifier.fillMaxSize()) {
-            if(state.isLoadingFirstTime) {
+            if (state.isLoadingFirstTime) {
                 CircularProgressIndicator(modifier = Modifier.align(Center))
             }
             LazyColumn {
                 items(posts) { post ->
                     Post(
                         post = com.astute.socialnetworkdefense.core.domain.models.Post(
+                            id = post?.id ?: "",
                             username = post?.username ?: "",
                             imageUrl = post?.imageUrl ?: "",
                             profilePictureUrl = post?.profilePictureUrl ?: "",
@@ -80,12 +81,12 @@ fun MainFeedScreen(
                             commentCount = post?.commentCount ?: 0
                         ),
                         onPostClick = {
-                            onNavigate(Screen.PostDetailScreen.route)
+                            onNavigate(Screen.PostDetailScreen.route + "/${post?.id}")
                         }
                     )
                 }
                 item {
-                    if(state.isLoadingNewPosts) {
+                    if (state.isLoadingNewPosts) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.BottomCenter)
                         )

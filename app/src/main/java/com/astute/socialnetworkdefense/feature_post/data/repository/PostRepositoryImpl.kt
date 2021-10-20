@@ -10,7 +10,8 @@ import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.*
 import com.astute.socialnetworkdefense.core.data.remote.PostApi
-import com.astute.socialnetworkdefense.feature_post.data.data.remote.request.CreatePostRequest
+import com.astute.socialnetworkdefense.core.domain.models.Comment
+import com.astute.socialnetworkdefense.feature_post.data.remote.request.CreatePostRequest
 import com.astute.socialnetworkdefense.feature_post.data.paging.PostSource
 import com.astute.socialnetworkdefense.feature_post.domain.repository.PostRepository
 import com.google.gson.Gson
@@ -26,7 +27,7 @@ class PostRepositoryImpl(
 ) : PostRepository {
 
     override val posts: Flow<PagingData<Post>>
-        get() = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE_POSTS)) {
+        get() = Pager(PagingConfig(pageSize = Constants.DEFAULT_PAGE_SIZE)) {
             PostSource(api, PostSource.Source.Follows)
         }.flow
 
@@ -58,6 +59,44 @@ class PostRepositoryImpl(
                     Resource.Error(UiText.DynamicString(msg))
                 } ?: Resource.Error(UiText.StringResource(R.string.error_unknown))
             }
+        } catch(e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch(e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.oops_something_went_wrong)
+            )
+        }
+    }
+
+    override suspend fun getPostDetails(postId: String): Resource<Post> {
+        return try {
+            val response = api.getPostDetails(postId = postId)
+            if(response.successful) {
+                Resource.Success(response.data)
+            } else {
+                response.message?.let { msg ->
+                    Resource.Error(UiText.DynamicString(msg))
+                } ?: Resource.Error(UiText.StringResource(R.string.error_unknown))
+            }
+        } catch(e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch(e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.oops_something_went_wrong)
+            )
+        }
+    }
+
+    override suspend fun getCommentsForPost(postId: String): Resource<List<Comment>> {
+        return try {
+            val comments = api.getCommentsForPost(postId = postId).map {
+                it.toComment()
+            }
+            Resource.Success(comments)
         } catch(e: IOException) {
             Resource.Error(
                 uiText = UiText.StringResource(R.string.error_couldnt_reach_server)

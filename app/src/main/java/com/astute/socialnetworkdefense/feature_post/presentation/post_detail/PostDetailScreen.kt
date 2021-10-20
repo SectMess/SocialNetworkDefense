@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,10 +18,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.items
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.Comment
 import com.astute.socialnetworkdefense.core.domain.models.Post
+import com.astute.socialnetworkdefense.feature_post.presentation.post_detail.PostDetailViewModel
 import com.astute.socialnetworkdefense.presentation.components.ActionRow
 import com.astute.socialnetworkdefense.presentation.components.StandardToolbar
 import com.astute.socialnetworkdefense.presentation.ui.theme.*
@@ -29,8 +35,10 @@ import com.astute.socialnetworkdefense.presentation.ui.theme.*
 fun PostDetailScreen(
     onNavigate: (String) -> Unit = {},
     onNavigateUp: () -> Unit = {},
-    post: Post
+    viewModel: PostDetailViewModel = hiltViewModel()
 ) {
+    val state = viewModel.state.value
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -70,63 +78,78 @@ fun PostDetailScreen(
                                 .shadow(5.dp)
                                 .background(MediumGray)
                         ) {
-                            Image(
-                                painterResource(id = R.drawable.explosion),
-                                contentDescription = "Post image",
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(SpaceLarge)
-                            ) {
-                                ActionRow(
-                                    username = "Philipp Lackner",
-                                    modifier = Modifier.fillMaxWidth(),
-                                    onLikeClick = { isLiked ->
-
-                                    },
-                                    onCommentClick = {
-
-                                    },
-                                    onShareClick = {
-
-                                    },
-                                    onUsernameClick = { username ->
-
-                                    }
-                                )
-                                Spacer(modifier = Modifier.height(SpaceSmall))
-                                Text(
-                                    text = post.description,
-                                    style = MaterialTheme.typography.body2,
-                                )
-                                Spacer(modifier = Modifier.height(SpaceMedium))
-                                Text(
-                                    text = stringResource(
-                                        id = R.string.liked_by_x_people,
-                                        post.likeCount
+                            state.post?.let { post ->
+                                Image(
+                                    painter = rememberImagePainter(
+                                        data = state.post.imageUrl,
+                                        builder = {
+                                            crossfade(true)
+                                        }
                                     ),
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.body2
+                                    contentDescription = "Post image",
+                                    modifier = Modifier.fillMaxWidth()
                                 )
-                            }
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(SpaceLarge)
+                                ) {
+                                    ActionRow(
+                                        username = "Test Astute",
+                                        modifier = Modifier.fillMaxWidth(),
+                                        onLikeClick = { isLiked ->
 
+                                        },
+                                        onCommentClick = {
+
+                                        },
+                                        onShareClick = {
+
+                                        },
+                                        onUsernameClick = { username ->
+
+                                        }
+                                    )
+                                    Spacer(modifier = Modifier.height(SpaceSmall))
+                                    Text(
+                                        text = state.post.description,
+                                        style = MaterialTheme.typography.body2,
+                                    )
+                                    Spacer(modifier = Modifier.height(SpaceMedium))
+                                    Text(
+                                        text = stringResource(
+                                            id = R.string.liked_by_x_people,
+                                            post.likeCount
+                                        ),
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.body2
+                                    )
+                                }
+                            }
                         }
                         Image(
-                            painterResource(id = R.drawable.explosion_logo),
+                            painter = rememberImagePainter(
+                                data = state.post?.profilePictureUrl,
+                                builder = {
+                                    crossfade(true)
+                                }
+                            ),
                             contentDescription = "Profile picture",
                             modifier = Modifier
-                                .size(ProfilePictureSize)
+                                .size(ProfilePictureSizeMedium)
                                 .clip(CircleShape)
                                 .align(Alignment.TopCenter)
                         )
-
+                        if (state.isLoadingPost) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(SpaceLarge))
             }
-            items(20) {
+            items(state.comments) { comment ->
                 Comment(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -134,25 +157,18 @@ fun PostDetailScreen(
                             horizontal = SpaceLarge,
                             vertical = SpaceSmall
                         ),
-                    comment = Comment(
-                        username = "Philipp Lackner$it",
-                        comment = "Lorem ipsum dolor sit amet, consetetur, asdfadsf\n" +
-                                "diam nonumy eirmod tempor invidunt ut fda fdsa\n" +
-                                "magna aliquyam erat, sed diam voluptua" +
-                                "Lorem ipsum dolor sit amet, consetetur, asdfadsf\\n\" +\n" +
-                                "                                \"diam nonumy eirmod tempor invidunt ut fda fdsa\\n\" +\n" +
-                                "                                \"magna aliquyam erat, sed diam voluptua",
-                    )
+                    comment = comment
                 )
             }
         }
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 fun Comment(
     modifier: Modifier = Modifier,
-    comment: Comment = Comment(),
+    comment: Comment,
     onLikeClick: (Boolean) -> Unit = {}
 ) {
     Card(
@@ -175,7 +191,12 @@ fun Comment(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.explosion_logo),
+                        painter = rememberImagePainter(
+                            data = comment.profilePictureUrl,
+                            builder = {
+                                crossfade(true)
+                            }
+                        ),
                         contentDescription = null,
                         modifier = Modifier
                             .clip(CircleShape)
@@ -190,7 +211,7 @@ fun Comment(
                     )
                 }
                 Text(
-                    text = "2 days ago",
+                    text = comment.formattedTime,
                     style = MaterialTheme.typography.body2
                 )
             }
@@ -213,6 +234,9 @@ fun Comment(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
+                        tint = if (comment.isLiked) {
+                            MaterialTheme.colors.primary
+                        } else MaterialTheme.colors.onBackground,
                         contentDescription = if (comment.isLiked) {
                             stringResource(id = R.string.unlike)
                         } else stringResource(id = R.string.like)
