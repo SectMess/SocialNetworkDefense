@@ -10,7 +10,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.astute.socialnetworkdefense"
+        applicationId "com.astute.groundtruth"
         minSdk 21
         targetSdk 31
         versionCode 1

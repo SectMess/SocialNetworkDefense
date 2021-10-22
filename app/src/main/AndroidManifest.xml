@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.astute.socialnetworkdefense">
+    package="com.astute.groundtruth">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:name=".SocialNetworkApplication"
+        android:name=".GroundTruthApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.SocialNetworkDefense">
+        android:theme="@style/Theme.groundtruth">
         <activity
             android:name=".core.presentation.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.SocialNetworkDefense.NoActionBar">
+            android:theme="@style/Theme.groundtruth.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
