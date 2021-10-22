@@ -25,7 +25,7 @@ fun StandardScaffold(
     //Display the Bottom Nav items
     bottomNavItems: List<BottomNavItem> = listOf(
         BottomNavItem(
-            route = Screen.MainFeedScreen.route,
+            route = Screen.MissionMapScreen.route,
             icon = Icons.Outlined.Home,
             contentDescription = "Home"
         ),

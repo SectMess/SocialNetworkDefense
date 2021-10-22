@@ -3,6 +3,12 @@
     package="com.astute.groundtruth">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
+
+
     <application
         android:name=".GroundTruthApplication"
         android:allowBackup="true"
@@ -12,6 +18,10 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.groundtruth">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="${googleMapsKey}"/>
+
         <activity
             android:name=".core.presentation.MainActivity"
             android:exported="true"

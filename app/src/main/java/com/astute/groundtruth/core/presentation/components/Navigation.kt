@@ -23,6 +23,7 @@ import com.astute.groundtruth.feature_auth.presentation.login.LoginScreen
 import com.astute.groundtruth.presentation.post_detail.PostDetailScreen
 import com.astute.groundtruth.feature_profile.presentation.profile.ProfileScreen
 import com.astute.groundtruth.feature_auth.presentation.register.RegisterScreen
+import com.astute.groundtruth.feature_map.presentation.mission_map.MissionMapScreen
 import com.astute.groundtruth.feature_profile.presentation.search.SearchScreen
 import com.astute.groundtruth.presentation.splash.SplashScreen
 
@@ -67,8 +68,13 @@ fun Navigation(
             )
         }
 
-        //TODO: Create MainMapScreen
-
+        composable(Screen.MissionMapScreen.route){
+            MissionMapScreen(
+                onNavigateUp = navController::navigateUp,
+                onNavigate = navController::navigate,
+                scaffoldState = scaffoldState
+            )
+        }
 
         composable(Screen.ChatScreen.route) {
             ChatScreen(
