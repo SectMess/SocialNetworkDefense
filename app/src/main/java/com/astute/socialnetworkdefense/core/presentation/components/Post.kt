@@ -43,7 +43,11 @@ fun Post(
     post: Post,
     modifier: Modifier = Modifier,
     showProfileImage: Boolean = true,
-    onPostClick: () -> Unit = {}
+    onPostClick: () -> Unit = {},
+    onLikeClick: () -> Unit = {},
+    onCommentClick: () -> Unit = {},
+    onShareClick: () -> Unit = {},
+    onUsernameClick: () -> Unit = {},
 ) {
 
     Box(
@@ -102,20 +106,12 @@ fun Post(
                 //Action Row below Post Image
                 ActionRow(
                     modifier = Modifier.fillMaxWidth(),
-                    onLikeClick = { isLiked ->
-
-                    },
-                    onCommentClick = {
-
-                    },
-                    onShareClick = {
-
-                    },
                     username = "Testing",
-                    onUsernameClick = { username ->
-
-                    }
-                )
+                    onLikeClick = onLikeClick,
+                    onCommentClick = onCommentClick,
+                    onShareClick = onShareClick,
+                    onUsernameClick = onUsernameClick
+                    )
 
                 //Post Description
                 Text(
@@ -178,7 +174,7 @@ fun EngagementButton(
     modifier: Modifier = Modifier,
     isLiked: Boolean = false,
     iconSize: Dp = 30.dp,
-    onLikeClick: (Boolean)-> Unit,
+    onLikeClick: () -> Unit = {},
     onCommentClick: ()-> Unit,
     onShareClick: ()-> Unit,
 ) {
@@ -188,13 +184,13 @@ fun EngagementButton(
         modifier = modifier
     ){
         IconButton(
-            onClick = { onLikeClick(!isLiked) },
+            onClick = { onLikeClick() },
             modifier = Modifier.size(iconSize),
         ) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
                 tint = if(isLiked){
-                    Color.Red
+                    MaterialTheme.colors.primary
                 } else {
                     Color.White
                 },
@@ -235,11 +231,11 @@ fun EngagementButton(
 fun ActionRow(
     modifier: Modifier = Modifier,
     isLiked: Boolean = false,
-    onLikeClick: (Boolean)-> Unit,
+    onLikeClick: () -> Unit,
     onCommentClick: ()-> Unit,
     onShareClick: ()-> Unit,
     username: String,
-    onUsernameClick: (String)-> Unit = {}
+    onUsernameClick: () -> Unit = {}
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -250,7 +246,7 @@ fun ActionRow(
             text = username,
             style = MaterialTheme.typography.h1,
             modifier = Modifier.clickable {
-                onUsernameClick(username)
+                onUsernameClick()
             }
         )
 

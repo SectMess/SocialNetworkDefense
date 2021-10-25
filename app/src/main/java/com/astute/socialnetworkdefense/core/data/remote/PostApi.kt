@@ -3,6 +3,8 @@ package com.astute.socialnetworkdefense.core.data.remote
 import com.astute.socialnetworkdefense.core.data.dto.response.BasicApiResponse
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.feature_post.data.remote.dto.CommentDto
+import com.astute.socialnetworkdefense.feature_post.data.remote.request.CreateCommentRequest
+import com.astute.socialnetworkdefense.feature_post.data.remote.request.LikeUpdateRequest
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
@@ -38,6 +40,21 @@ interface PostApi {
         @Query("postId") postId: String
     ): List<CommentDto>
 
+    @POST("/api/comment/create")
+    suspend fun createComment(
+        @Body request: CreateCommentRequest
+    ): BasicApiResponse<Unit>
+
+    @POST("/api/like")
+    suspend fun likeParent(
+        @Body request: LikeUpdateRequest
+    ): BasicApiResponse<Unit>
+
+    @DELETE("/api/unlike")
+    suspend fun unlikeParent(
+        @Query("parentId") parentId: String,
+        @Query("parentType") parentType: Int
+    ): BasicApiResponse<Unit>
 
     companion object {
         const val BASE_URL = "http://10.0.2.2:8881/"

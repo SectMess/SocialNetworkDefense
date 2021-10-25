@@ -5,11 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
+import com.astute.socialnetworkdefense.core.util.ParentType
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.feature_post.domain.use_case.PostUseCases
+import com.astute.socialnetworkdefense.feature_post.presentation.util.CommentError
+import com.astute.socialnetworkdefense.presentation.util.states.StandardTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -18,11 +23,17 @@ import javax.inject.Inject
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
     private val postUseCases: PostUseCases,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(PostDetailState())
     val state: State<PostDetailState> = _state
+
+    private val _commentTextFieldState = mutableStateOf(StandardTextFieldState(error = CommentError.FieldEmpty))
+    val commentTextFieldState: State<StandardTextFieldState> = _commentTextFieldState
+
+    private val _commentState = mutableStateOf(CommentState())
+    val commentState: State<CommentState> = _commentState
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -37,16 +48,39 @@ class PostDetailViewModel @Inject constructor(
     fun onEvent(event: PostDetailEvent) {
         when(event) {
             is PostDetailEvent.LikePost -> {
-
+                val isLiked = state.value.post?.isLiked == true
+                toggleLikeForParent(
+                    parentId = state.value.post?.id ?: return,
+                    parentType = ParentType.Post.type,
+                    isLiked = isLiked
+                )
             }
             is PostDetailEvent.Comment -> {
 
+                createComment(
+                    postId = savedStateHandle.get<String>("postId") ?: "",
+                    comment = commentTextFieldState.value.text
+                )
+
             }
             is PostDetailEvent.LikeComment -> {
-
+                val isLiked = state.value.comments.find {
+                    it.id == event.commentId
+                }?.isLiked == true
+                toggleLikeForParent(
+                    parentId = event.commentId,
+                    parentType = ParentType.Comment.type,
+                    isLiked = isLiked
+                )
             }
             is PostDetailEvent.SharePost -> {
 
+            }
+            is PostDetailEvent.EnteredComment -> {
+                _commentTextFieldState.value = commentTextFieldState.value.copy(
+                    text = event.comment,
+                    error = if(event.comment.isBlank()) CommentError.FieldEmpty else null
+                )
             }
         }
     }
@@ -95,6 +129,100 @@ class PostDetailViewModel @Inject constructor(
                     _state.value = state.value.copy(
                         isLoadingComments = false
                     )
+                }
+            }
+        }
+    }
+
+    private fun createComment(postId: String, comment: String) {
+        viewModelScope.launch {
+            _commentState.value = commentState.value.copy(
+                isLoading = true
+            )
+            val result = postUseCases.createComment(
+                postId = postId,
+                comment = comment
+            )
+            when (result) {
+                is Resource.Success -> {
+                    _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            uiText = UiText.StringResource(R.string.comment_posted)
+                        )
+                    )
+                    _commentState.value = commentState.value.copy(
+                        isLoading = false
+                    )
+                    _commentTextFieldState.value = commentTextFieldState.value.copy(
+                        text = "",
+                        error = CommentError.FieldEmpty
+                    )
+                    loadCommentsForPost(postId)
+                }
+                is Resource.Error -> {
+                    _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            uiText = result.uiText ?: UiText.unknownError()
+                        )
+                    )
+                    _commentState.value = commentState.value.copy(
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun toggleLikeForParent(
+        parentId: String,
+        parentType: Int,
+        isLiked: Boolean
+    ) {
+        viewModelScope.launch {
+            when(parentType) {
+                ParentType.Post.type -> {
+                    _state.value = state.value.copy(
+                        post = state.value.post?.copy(
+                            isLiked = !isLiked
+                        )
+                    )
+                }
+                ParentType.Comment.type -> {
+                    _state.value = state.value.copy(
+                        comments = state.value.comments.map {
+                            if(it.id == parentId) {
+                                it.copy(isLiked = !isLiked)
+                            } else it
+                        }
+                    )
+                }
+            }
+            val result = postUseCases.toggleLikeForParent(
+                parentId = parentId,
+                parentType = parentType,
+                isLiked = isLiked
+            )
+            when(result) {
+                is Resource.Success -> Unit
+                is Resource.Error -> {
+                    when(parentType) {
+                        ParentType.Post.type -> {
+                            _state.value = state.value.copy(
+                                post = state.value.post?.copy(
+                                    isLiked = isLiked
+                                )
+                            )
+                        }
+                        ParentType.Comment.type -> {
+                            _state.value = state.value.copy(
+                                comments = state.value.comments.map {
+                                    if(it.id == parentId) {
+                                        it.copy(isLiked = isLiked)
+                                    } else it
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
