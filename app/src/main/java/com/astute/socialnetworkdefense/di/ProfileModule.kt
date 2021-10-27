@@ -1,9 +1,10 @@
 package com.astute.socialnetworkdefense.di
 
-import com.astute.socialnetworkdefense.core.data.remote.PostApi
+import com.astute.socialnetworkdefense.feature_post.data.remote.PostApi
 import com.astute.socialnetworkdefense.feature_profile.data.remote.ProfileApi
-import com.astute.socialnetworkdefense.feature_profile.data.repository.ProfileRepositoryImpl
-import com.astute.socialnetworkdefense.feature_profile.domain.repository.ProfileRepository
+import com.astute.socialnetworkdefense.core.data.repository.ProfileRepositoryImpl
+import com.astute.socialnetworkdefense.core.domain.repository.ProfileRepository
+import com.astute.socialnetworkdefense.core.domain.use_case.ToggleFollowStateForUserUseCase
 import com.astute.socialnetworkdefense.feature_profile.domain.use_case.*
 import com.google.gson.Gson
 import dagger.Module
@@ -32,7 +33,11 @@ object ProfileModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepository(profileApi: ProfileApi, postApi: PostApi, gson: Gson): ProfileRepository {
+    fun provideProfileRepository(
+        profileApi: ProfileApi,
+        postApi: PostApi,
+        gson: Gson
+    ): ProfileRepository {
         return ProfileRepositoryImpl(profileApi, postApi, gson)
     }
 
@@ -44,7 +49,17 @@ object ProfileModule {
             getSkills = GetSkillsUseCase(repository),
             updateProfile = UpdateProfileUseCase(repository),
             setSkillSelected = SetSkillSelectedUseCase(),
-            getPostsForProfile = GetPostsForProfileUseCase(repository)
+            getPostsForProfile = GetPostsForProfileUseCase(repository),
+            searchUser = SearchUserUseCase(repository),
+            toggleFollowStateForUser = ToggleFollowStateForUserUseCase(repository)
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideToggleFollowForUserUseCase(repository: ProfileRepository): ToggleFollowStateForUserUseCase {
+        return ToggleFollowStateForUserUseCase(repository)
+    }
+
+
 }

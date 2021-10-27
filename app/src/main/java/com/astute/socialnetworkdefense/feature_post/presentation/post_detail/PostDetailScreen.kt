@@ -2,6 +2,7 @@ package com.astute.socialnetworkdefense.presentation.post_detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,9 +21,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
+import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.core.util.asString
 import com.astute.socialnetworkdefense.feature_post.presentation.post_detail.Comment
 import com.astute.socialnetworkdefense.feature_post.presentation.post_detail.PostDetailEvent
@@ -33,6 +36,7 @@ import com.astute.socialnetworkdefense.presentation.components.StandardToolbar
 import com.astute.socialnetworkdefense.presentation.ui.theme.*
 import kotlinx.coroutines.flow.collectLatest
 
+@ExperimentalCoilApi
 @Composable
 fun PostDetailScreen(
     scaffoldState: ScaffoldState,
@@ -46,7 +50,7 @@ fun PostDetailScreen(
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.uiText.asString(context)
@@ -105,7 +109,10 @@ fun PostDetailScreen(
                                         }
                                     ),
                                     contentDescription = "Post image",
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(16f / 9f)
+
                                 )
                                 Column(
                                     modifier = Modifier
@@ -141,7 +148,11 @@ fun PostDetailScreen(
                                             post.likeCount
                                         ),
                                         fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.body2
+                                        style = MaterialTheme.typography.body2,
+                                        modifier = Modifier.clickable {
+                                            onNavigate(Screen.PersonListScreen.route + "/${post.id}")
+
+                                        }
                                     )
                                 }
                             }
@@ -179,6 +190,9 @@ fun PostDetailScreen(
                     comment = comment,
                     onLikeClick = {
                         viewModel.onEvent(PostDetailEvent.LikeComment(comment.id))
+                    },
+                    onLikedByClick = {
+                        onNavigate(Screen.PersonListScreen.route + "/${comment.id}")
                     }
                 )
             }
@@ -201,7 +215,7 @@ fun PostDetailScreen(
                     .weight(1f),
                 hint = stringResource(id = R.string.enter_a_comment)
             )
-            if(viewModel.commentState.value.isLoading) {
+            if (viewModel.commentState.value.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
@@ -225,7 +239,6 @@ fun PostDetailScreen(
                 }
             }
         }
-
 
 
     }

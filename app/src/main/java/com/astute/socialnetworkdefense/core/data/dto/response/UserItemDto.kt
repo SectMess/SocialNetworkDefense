@@ -1,8 +1,8 @@
-package com.astute.socialnetworkdefense.feature_profile.data.remote.response
+package com.astute.socialnetworkdefense.core.data.dto.response
 
 import com.astute.socialnetworkdefense.core.domain.models.UserItem
 
-data class UserResponseItem(
+data class UserItemDto(
     val userId: String,
     val username: String,
     val profilePictureUrl: String,

@@ -1,13 +1,12 @@
 package com.astute.socialnetworkdefense.feature_profile.domain.use_case
 
 import android.net.Uri
-import android.util.Patterns
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.SimpleResource
 import com.astute.socialnetworkdefense.feature_profile.domain.model.UpdateProfileData
-import com.astute.socialnetworkdefense.feature_profile.domain.repository.ProfileRepository
+import com.astute.socialnetworkdefense.core.domain.repository.ProfileRepository
 import com.astute.socialnetworkdefense.feature_profile.domain.util.ProfileConstants
 
 class UpdateProfileUseCase(

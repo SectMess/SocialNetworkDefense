@@ -1,6 +1,7 @@
-package com.astute.socialnetworkdefense.core.data.remote
+package com.astute.socialnetworkdefense.feature_post.data.remote
 
 import com.astute.socialnetworkdefense.core.data.dto.response.BasicApiResponse
+import com.astute.socialnetworkdefense.core.data.dto.response.UserItemDto
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.feature_post.data.remote.dto.CommentDto
 import com.astute.socialnetworkdefense.feature_post.data.remote.request.CreateCommentRequest
@@ -55,6 +56,11 @@ interface PostApi {
         @Query("parentId") parentId: String,
         @Query("parentType") parentType: Int
     ): BasicApiResponse<Unit>
+
+    @GET("/api/like/parent")
+    suspend fun getLikesForParent(
+        @Query("parentId") parentId: String
+    ): List<UserItemDto>
 
     companion object {
         const val BASE_URL = "http://10.0.2.2:8881/"

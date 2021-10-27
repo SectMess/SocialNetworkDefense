@@ -6,6 +6,7 @@ data class PostUseCases(
     val getPostDetails: GetPostDetailsUseCase,
     val getCommentsForPost: GetCommentsForPostUseCase,
     val createComment: CreateCommentUseCase,
-    val toggleLikeForParent: ToggleLikeForParentUseCase
+    val toggleLikeForParent: ToggleLikeForParentUseCase,
+    val getLikesForParent: GetLikesForParentUseCase,
 
 )

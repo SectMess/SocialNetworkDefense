@@ -9,8 +9,9 @@ import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.*
-import com.astute.socialnetworkdefense.core.data.remote.PostApi
+import com.astute.socialnetworkdefense.feature_post.data.remote.PostApi
 import com.astute.socialnetworkdefense.core.domain.models.Comment
+import com.astute.socialnetworkdefense.core.domain.models.UserItem
 import com.astute.socialnetworkdefense.feature_post.data.remote.request.CreatePostRequest
 import com.astute.socialnetworkdefense.feature_post.data.paging.PostSource
 import com.astute.socialnetworkdefense.feature_post.data.remote.request.CreateCommentRequest
@@ -175,6 +176,23 @@ class PostRepositoryImpl(
                     Resource.Error(UiText.DynamicString(msg))
                 } ?: Resource.Error(UiText.StringResource(R.string.error_unknown))
             }
+        } catch(e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch(e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.oops_something_went_wrong)
+            )
+        }
+    }
+
+    override suspend fun getLikesForParent(parentId: String): Resource<List<UserItem>> {
+        return try {
+            val response = api.getLikesForParent(
+                parentId = parentId,
+            )
+            Resource.Success(response.map { it.toUserItem() })
         } catch(e: IOException) {
             Resource.Error(
                 uiText = UiText.StringResource(R.string.error_couldnt_reach_server)

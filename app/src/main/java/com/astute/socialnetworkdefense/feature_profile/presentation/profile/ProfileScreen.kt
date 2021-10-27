@@ -43,6 +43,7 @@ import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceSmall
 import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.core.util.asString
 import com.astute.socialnetworkdefense.core.util.toPx
+import com.astute.socialnetworkdefense.feature_post.presentation.person_list.PostEvent
 import com.astute.socialnetworkdefense.presentation.components.Post
 import kotlinx.coroutines.flow.collectLatest
 
@@ -104,6 +105,7 @@ fun ProfileScreen(
 
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
+        viewModel.setExpandedRatio(1f)
         viewModel.getProfile(userId)
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -111,6 +113,9 @@ fun ProfileScreen(
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.uiText.asString(context)
                     )
+                }
+                is PostEvent.OnLiked -> {
+                    posts.refresh()
                 }
             }
         }
@@ -175,6 +180,9 @@ fun ProfileScreen(
                     onPostClick = {
                         onNavigate(Screen.PostDetailScreen.route + "/${post?.id}")
                     },
+                    onLikeClick = {
+                        viewModel.onEvent(ProfileEvent.LikePost(post?.id ?: ""))
+                    }
                 )
             }
         }

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.paging.PagingData
 import com.astute.socialnetworkdefense.core.domain.models.Comment
 import com.astute.socialnetworkdefense.core.domain.models.Post
+import com.astute.socialnetworkdefense.core.domain.models.UserItem
 import com.astute.socialnetworkdefense.core.util.Constants
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.SimpleResource
@@ -24,4 +25,7 @@ interface PostRepository {
     suspend fun likeParent(parentId: String, parentType: Int): SimpleResource
 
     suspend fun unlikeParent(parentId: String, parentType: Int): SimpleResource
+
+    suspend fun getLikesForParent(parentId: String): Resource<List<UserItem>>
+
 }

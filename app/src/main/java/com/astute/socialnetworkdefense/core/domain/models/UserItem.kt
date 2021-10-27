@@ -1,4 +1,4 @@
-package com.astute.socialnetworkdefense.feature_profile.domain.model
+package com.astute.socialnetworkdefense.core.domain.models
 
 data class UserItem(
     val userId: String,

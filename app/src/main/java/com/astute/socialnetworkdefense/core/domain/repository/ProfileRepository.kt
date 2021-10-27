@@ -1,8 +1,9 @@
-package com.astute.socialnetworkdefense.feature_profile.domain.repository
+package com.astute.socialnetworkdefense.core.domain.repository
 
 import android.net.Uri
 import androidx.paging.PagingData
 import com.astute.socialnetworkdefense.core.domain.models.Post
+import com.astute.socialnetworkdefense.core.domain.models.UserItem
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.SimpleResource
 import com.astute.socialnetworkdefense.feature_profile.domain.model.Profile
@@ -23,4 +24,10 @@ interface ProfileRepository {
     ): SimpleResource
 
     suspend fun getSkills(): Resource<List<Skill>>
+
+    suspend fun searchUser(query: String): Resource<List<UserItem>>
+
+    suspend fun followUser(userId: String): SimpleResource
+
+    suspend fun unfollowUser(userId: String): SimpleResource
 }
