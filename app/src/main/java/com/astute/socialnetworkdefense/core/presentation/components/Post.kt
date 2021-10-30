@@ -93,6 +93,7 @@ fun Post(
                 //Action Row below Post Image
                 ActionRow(
                     modifier = Modifier.fillMaxWidth(),
+                    isLiked = post.isLiked,
                     username = "Testing",
                     onLikeClick = onLikeClick,
                     onCommentClick = onCommentClick,
@@ -124,7 +125,7 @@ fun Post(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(id = R.string.liked_by_x_people, post.likeCount),
+                        text = stringResource(id = R.string.x_likes, post.likeCount),
                         style = MaterialTheme.typography.h2,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

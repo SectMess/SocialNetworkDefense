@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.paging.PagingData
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.domain.models.UserItem
+import com.astute.socialnetworkdefense.core.util.Constants
 import com.astute.socialnetworkdefense.core.util.Resource
 import com.astute.socialnetworkdefense.core.util.SimpleResource
 import com.astute.socialnetworkdefense.feature_profile.domain.model.Profile
@@ -13,7 +14,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
 
-    fun getPostsPaged(userId: String): Flow<PagingData<Post>>
+    suspend fun getPostsPaged(
+        page: Int = 0,
+        pageSize: Int = Constants.DEFAULT_PAGE_SIZE,
+        userId: String
+    ): Resource<List<Post>>
 
     suspend fun getProfile(userId: String): Resource<Profile>
 
