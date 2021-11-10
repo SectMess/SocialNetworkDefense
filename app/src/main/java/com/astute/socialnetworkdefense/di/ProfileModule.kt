@@ -1,5 +1,6 @@
 package com.astute.socialnetworkdefense.di
 
+import android.content.SharedPreferences
 import com.astute.socialnetworkdefense.feature_post.data.remote.PostApi
 import com.astute.socialnetworkdefense.feature_profile.data.remote.ProfileApi
 import com.astute.socialnetworkdefense.core.data.repository.ProfileRepositoryImpl
@@ -36,9 +37,10 @@ object ProfileModule {
     fun provideProfileRepository(
         profileApi: ProfileApi,
         postApi: PostApi,
-        gson: Gson
+        gson: Gson,
+        sharedPreferences: SharedPreferences
     ): ProfileRepository {
-        return ProfileRepositoryImpl(profileApi, postApi, gson)
+        return ProfileRepositoryImpl(profileApi, postApi, gson, sharedPreferences)
     }
 
     @Provides
@@ -51,7 +53,8 @@ object ProfileModule {
             setSkillSelected = SetSkillSelectedUseCase(),
             getPostsForProfile = GetPostsForProfileUseCase(repository),
             searchUser = SearchUserUseCase(repository),
-            toggleFollowStateForUser = ToggleFollowStateForUserUseCase(repository)
+            toggleFollowStateForUser = ToggleFollowStateForUserUseCase(repository),
+            logout = LogoutUseCase(repository)
         )
     }
 

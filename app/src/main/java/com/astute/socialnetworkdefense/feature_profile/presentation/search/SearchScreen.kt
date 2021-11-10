@@ -15,6 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.User
 import com.astute.socialnetworkdefense.core.util.Screen
@@ -26,9 +28,11 @@ import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceLarge
 import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceMedium
 import com.astute.socialnetworkdefense.presentation.util.states.StandardTextFieldState
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun SearchScreen(
+    imageLoader: ImageLoader,
     onNavigate: (String) -> Unit = {},
     onNavigateUp: () -> Unit = {},
     viewModel: SearchViewModel = hiltViewModel()
@@ -74,6 +78,7 @@ fun SearchScreen(
                     items(state.userItems) { user ->
                         UserProfileItem(
                             user = user,
+                            imageLoader = imageLoader,
                             actionIcon = {
                                 IconButton(
                                     onClick = {

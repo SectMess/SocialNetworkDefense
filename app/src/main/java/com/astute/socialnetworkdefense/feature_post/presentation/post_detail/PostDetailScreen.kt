@@ -12,21 +12,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
+import com.astute.socialnetworkdefense.core.presentation.util.showKeyboard
 import com.astute.socialnetworkdefense.core.util.Screen
 import com.astute.socialnetworkdefense.core.util.asString
+import com.astute.socialnetworkdefense.core.util.sendSharePostIntent
 import com.astute.socialnetworkdefense.feature_post.presentation.post_detail.Comment
 import com.astute.socialnetworkdefense.feature_post.presentation.post_detail.PostDetailEvent
 import com.astute.socialnetworkdefense.feature_post.presentation.post_detail.PostDetailViewModel
@@ -40,15 +45,26 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun PostDetailScreen(
     scaffoldState: ScaffoldState,
+    imageLoader: ImageLoader,
     onNavigate: (String) -> Unit = {},
     onNavigateUp: () -> Unit = {},
-    viewModel: PostDetailViewModel = hiltViewModel()
+    viewModel: PostDetailViewModel = hiltViewModel(),
+    shouldShowKeyboard: Boolean = false
+
 ) {
     val state = viewModel.state.value
     val commentTextFieldState = viewModel.commentTextFieldState.value
 
+    val focusRequester = remember {
+        FocusRequester()
+    }
+
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
+        if (shouldShowKeyboard) {
+            context.showKeyboard()
+            focusRequester.requestFocus()
+        }
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
@@ -104,9 +120,7 @@ fun PostDetailScreen(
                                 Image(
                                     painter = rememberImagePainter(
                                         data = state.post.imageUrl,
-                                        builder = {
-                                            crossfade(true)
-                                        }
+                                        imageLoader = imageLoader
                                     ),
                                     contentDescription = "Post image",
                                     modifier = Modifier
@@ -129,9 +143,11 @@ fun PostDetailScreen(
 
                                         },
                                         onShareClick = {
+                                            context.sendSharePostIntent(post.id)
 
                                         },
                                         onUsernameClick = {
+                                            onNavigate(Screen.ProfileScreen.route + "?userId=${post.userId}")
 
                                         },
                                         isLiked = state.post.isLiked
@@ -187,6 +203,7 @@ fun PostDetailScreen(
                             horizontal = SpaceLarge,
                             vertical = SpaceSmall
                         ),
+                    imageLoader = imageLoader,
                     comment = comment,
                     onLikeClick = {
                         viewModel.onEvent(PostDetailEvent.LikeComment(comment.id))

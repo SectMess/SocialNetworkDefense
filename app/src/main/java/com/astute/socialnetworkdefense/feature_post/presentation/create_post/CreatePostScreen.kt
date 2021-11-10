@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.astute.socialnetworkdefense.R
@@ -40,8 +42,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@ExperimentalCoilApi
 @Composable
 fun CreatePostScreen(
+    imageLoader: ImageLoader,
     onNavigateUp: () -> Unit = {},
     onNavigate: (String) -> Unit = {},
     scaffoldState: ScaffoldState,
@@ -120,9 +124,8 @@ fun CreatePostScreen(
                 imageUri?.let { uri ->
                     Image(
                         painter = rememberImagePainter(
-                            request = ImageRequest.Builder(LocalContext.current)
-                                .data(uri)
-                                .build()
+                            data = uri,
+                            imageLoader = imageLoader
                         ),
                         contentDescription = stringResource(id = R.string.post_image),
                         modifier = Modifier.matchParentSize()

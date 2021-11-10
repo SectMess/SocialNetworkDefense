@@ -76,4 +76,10 @@
     <string name="comment_posted">Successfully Posted Comment</string>
     <string name="enter_a_comment">Enter a Comment</string>
     <string name="send_comment">Send Comment</string>
+    <string name="logout">Log Out</string>
+    <string name="do_you_want_to_logout">Do you want to logout?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="share_intent_text">I found a great post, go check it out!</string>
+    <string name="error_not_logged_in">Opps! Please Log in first.</string>
 </resources>

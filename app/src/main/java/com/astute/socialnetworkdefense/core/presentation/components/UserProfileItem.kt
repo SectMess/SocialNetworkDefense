@@ -12,6 +12,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.UserItem
 import com.astute.socialnetworkdefense.presentation.ui.theme.IconSizeMedium
@@ -19,10 +22,12 @@ import com.astute.socialnetworkdefense.presentation.ui.theme.ProfilePictureSizeS
 import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceMedium
 import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceSmall
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun UserProfileItem(
     user: UserItem,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
     actionIcon: @Composable () -> Unit = {},
     onItemClick: () -> Unit = {},
@@ -46,7 +51,10 @@ fun UserProfileItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Image(
-                painter = painterResource(id = R.drawable.explosion),
+                painter = rememberImagePainter(
+                    data = user.profilePictureUrl,
+                    imageLoader = imageLoader
+                ),
                 contentDescription = null,
                 modifier = Modifier
                     .size(ProfilePictureSizeSmall)

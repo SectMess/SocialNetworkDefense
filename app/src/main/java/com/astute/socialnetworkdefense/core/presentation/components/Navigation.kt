@@ -1,5 +1,6 @@
 package com.astute.socialnetworkdefense.presentation.util
 
+import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
@@ -10,6 +11,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import com.astute.socialnetworkdefense.core.domain.models.Post
 import com.astute.socialnetworkdefense.core.util.Screen
@@ -31,7 +34,8 @@ import com.astute.socialnetworkdefense.presentation.splash.SplashScreen
 @Composable
 fun Navigation(
     navController: NavHostController,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    imageLoader: ImageLoader
 ) {
     NavHost(
         navController = navController,
@@ -48,6 +52,13 @@ fun Navigation(
         composable(Screen.LoginScreen.route){
             LoginScreen(
                 onNavigate = navController::navigate,
+                onLogin = {
+                    navController.popBackStack(
+                        route = Screen.LoginScreen.route,
+                        inclusive = true
+                    )
+                    navController.navigate(route = Screen.MainFeedScreen.route)
+                },
                 scaffoldState = scaffoldState
             )
         }
@@ -63,7 +74,8 @@ fun Navigation(
             MainFeedScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                imageLoader = imageLoader
             )
         }
 
@@ -71,6 +83,7 @@ fun Navigation(
             ChatScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
+                imageLoader = imageLoader
             )
         }
 
@@ -93,9 +106,12 @@ fun Navigation(
         ) {
             ProfileScreen(
                 userId = it.arguments?.getString("userId"),
-                onNavigateUp = navController::navigateUp,
+                onLogout = {
+                    navController.navigate(route = Screen.LoginScreen.route)
+                },
                 onNavigate = navController::navigate,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                imageLoader = imageLoader
             )
         }
 
@@ -103,7 +119,8 @@ fun Navigation(
             CreatePostScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                imageLoader = imageLoader
             )
         }
 
@@ -118,7 +135,8 @@ fun Navigation(
             EditProfileScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                imageLoader = imageLoader
             )
         }
 
@@ -126,6 +144,7 @@ fun Navigation(
             SearchScreen(
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
+                imageLoader = imageLoader
             )
         }
 
@@ -141,23 +160,40 @@ fun Navigation(
                 scaffoldState = scaffoldState,
                 onNavigateUp = navController::navigateUp,
                 onNavigate = navController::navigate,
+                imageLoader = imageLoader
             )
         }
 
         composable(
-            route = Screen.PostDetailScreen.route + "/{postId}",
+            route = Screen.PostDetailScreen.route + "/{postId}?shouldShowKeyboard={shouldShowKeyboard}",
             arguments = listOf(
                 navArgument(
                     name = "postId"
                 ) {
                     type = NavType.StringType
+                },
+                navArgument(
+                    name = "shouldShowKeyboard"
+                ) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    action = Intent.ACTION_VIEW
+                    uriPattern = "https://pl-coding.com/{postId}"
                 }
             )
         ) {
+            val shouldShowKeyboard = it.arguments?.getBoolean("shouldShowKeyboard") ?: false
+            println("POST ID: ${it.arguments?.getString("postId")}")
             PostDetailScreen(
                 scaffoldState = scaffoldState,
                 onNavigateUp = navController::navigateUp,
-                onNavigate = navController::navigate
+                onNavigate = navController::navigate,
+                shouldShowKeyboard = shouldShowKeyboard,
+                imageLoader = imageLoader
             )
         }
 

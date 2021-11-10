@@ -13,15 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
 import com.astute.socialnetworkdefense.presentation.components.StandardScaffold
 import com.astute.socialnetworkdefense.presentation.ui.theme.SocialNetworkDefenseTheme
 import com.astute.socialnetworkdefense.presentation.util.Navigation
 import com.astute.socialnetworkdefense.core.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@ExperimentalMaterialApi
+@ExperimentalCoilApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @ExperimentalMaterialApi
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -44,7 +52,7 @@ class MainActivity : ComponentActivity() {
                             navController.navigate(Screen.CreatePostScreen.route)
                         }
                     ) {
-                        Navigation(navController, scaffoldState)
+                        Navigation(navController, scaffoldState, imageLoader)
                     }
                 }
             }

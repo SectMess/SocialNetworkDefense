@@ -27,6 +27,7 @@ import com.astute.socialnetworkdefense.feature_profile.domain.model.Skill
 @ExperimentalCoilApi
 @Composable
 fun BannerSection(
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
     imageModifier: Modifier = Modifier,
     iconSize: Dp = 35.dp,
@@ -47,9 +48,8 @@ fun BannerSection(
         Image(
             painter = rememberImagePainter(
                 data = bannerUrl,
-                builder = {
-                    crossfade(true)
-                }
+                imageLoader = imageLoader
+
             ),
             contentDescription = stringResource(id = R.string.banner_image),
             contentScale = ContentScale.Crop,
@@ -80,11 +80,8 @@ fun BannerSection(
                 Image(
                     painter = rememberImagePainter(
                         data = skill.imageUrl,
-                        imageLoader = ImageLoader.Builder(LocalContext.current)
-                            .componentRegistry {
-                                add(SvgDecoder(LocalContext.current))
-                            }
-                            .build()
+                        imageLoader = imageLoader
+
                     ),
                     contentDescription = null,
                     modifier = Modifier.height(iconSize)

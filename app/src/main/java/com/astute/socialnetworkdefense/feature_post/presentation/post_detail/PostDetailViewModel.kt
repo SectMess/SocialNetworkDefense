@@ -10,6 +10,7 @@ import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
 import com.astute.socialnetworkdefense.core.presentation.util.UiText
 import com.astute.socialnetworkdefense.core.util.ParentType
 import com.astute.socialnetworkdefense.core.util.Resource
+import com.astute.socialnetworkdefense.feature_auth.domain.use_case.AuthenticateUseCase
 import com.astute.socialnetworkdefense.feature_post.domain.use_case.PostUseCases
 import com.astute.socialnetworkdefense.feature_post.presentation.util.CommentError
 import com.astute.socialnetworkdefense.presentation.util.states.StandardTextFieldState
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
+    private val authenticate: AuthenticateUseCase,
     private val postUseCases: PostUseCases,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -29,7 +31,8 @@ class PostDetailViewModel @Inject constructor(
     private val _state = mutableStateOf(PostDetailState())
     val state: State<PostDetailState> = _state
 
-    private val _commentTextFieldState = mutableStateOf(StandardTextFieldState(error = CommentError.FieldEmpty))
+    private val _commentTextFieldState =
+        mutableStateOf(StandardTextFieldState(error = CommentError.FieldEmpty))
     val commentTextFieldState: State<StandardTextFieldState> = _commentTextFieldState
 
     private val _commentState = mutableStateOf(CommentState())
@@ -37,6 +40,8 @@ class PostDetailViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    private var isUserLoggedIn = false
 
     init {
         savedStateHandle.get<String>("postId")?.let { postId ->
@@ -46,7 +51,7 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun onEvent(event: PostDetailEvent) {
-        when(event) {
+        when (event) {
             is PostDetailEvent.LikePost -> {
                 val isLiked = state.value.post?.isLiked == true
                 toggleLikeForParent(
@@ -73,13 +78,11 @@ class PostDetailViewModel @Inject constructor(
                     isLiked = isLiked
                 )
             }
-            is PostDetailEvent.SharePost -> {
 
-            }
             is PostDetailEvent.EnteredComment -> {
                 _commentTextFieldState.value = commentTextFieldState.value.copy(
                     text = event.comment,
-                    error = if(event.comment.isBlank()) CommentError.FieldEmpty else null
+                    error = if (event.comment.isBlank()) CommentError.FieldEmpty else null
                 )
             }
         }
@@ -91,7 +94,7 @@ class PostDetailViewModel @Inject constructor(
                 isLoadingPost = true
             )
             val result = postUseCases.getPostDetails(postId)
-            when(result) {
+            when (result) {
                 is Resource.Success -> {
                     _state.value = state.value.copy(
                         post = result.data,
@@ -118,7 +121,7 @@ class PostDetailViewModel @Inject constructor(
                 isLoadingComments = true
             )
             val result = postUseCases.getCommentsForPost(postId)
-            when(result) {
+            when (result) {
                 is Resource.Success -> {
                     _state.value = state.value.copy(
                         comments = result.data ?: emptyList(),
@@ -136,6 +139,12 @@ class PostDetailViewModel @Inject constructor(
 
     private fun createComment(postId: String, comment: String) {
         viewModelScope.launch {
+            isUserLoggedIn = authenticate() is Resource.Success
+            if(!isUserLoggedIn) {
+                _eventFlow.emit(UiEvent.ShowSnackbar(UiText.StringResource(R.string.error_not_logged_in)))
+                return@launch
+            }
+
             _commentState.value = commentState.value.copy(
                 isLoading = true
             )
@@ -179,20 +188,38 @@ class PostDetailViewModel @Inject constructor(
         isLiked: Boolean
     ) {
         viewModelScope.launch {
-            when(parentType) {
+            isUserLoggedIn = authenticate() is Resource.Success
+            if(!isUserLoggedIn) {
+                _eventFlow.emit(UiEvent.ShowSnackbar(UiText.StringResource(R.string.error_not_logged_in)))
+                return@launch
+            }
+
+            val currentLikeCount = state.value.post?.likeCount ?: 0
+
+            when (parentType) {
                 ParentType.Post.type -> {
+                    val post = state.value.post
+
                     _state.value = state.value.copy(
                         post = state.value.post?.copy(
-                            isLiked = !isLiked
+                            isLiked = !isLiked,
+                            likeCount = if (isLiked) {
+                                post?.likeCount?.minus(1) ?: 0
+                            } else post?.likeCount?.plus(1) ?: 0
                         )
                     )
                 }
                 ParentType.Comment.type -> {
                     _state.value = state.value.copy(
-                        comments = state.value.comments.map {
-                            if(it.id == parentId) {
-                                it.copy(isLiked = !isLiked)
-                            } else it
+                        comments = state.value.comments.map { comment ->
+                            if (comment.id == parentId) {
+                                comment.copy(
+                                    isLiked = !isLiked,
+                                    likeCount = if (isLiked) {
+                                        comment.likeCount - 1
+                                    } else comment.likeCount + 1
+                                )
+                            } else comment
                         }
                     )
                 }
@@ -202,23 +229,32 @@ class PostDetailViewModel @Inject constructor(
                 parentType = parentType,
                 isLiked = isLiked
             )
-            when(result) {
+            when (result) {
                 is Resource.Success -> Unit
                 is Resource.Error -> {
-                    when(parentType) {
+                    when (parentType) {
                         ParentType.Post.type -> {
+                            val post = state.value.post
+
                             _state.value = state.value.copy(
                                 post = state.value.post?.copy(
-                                    isLiked = isLiked
+                                    isLiked = isLiked,
+                                    likeCount = currentLikeCount
+
                                 )
                             )
                         }
                         ParentType.Comment.type -> {
                             _state.value = state.value.copy(
-                                comments = state.value.comments.map {
-                                    if(it.id == parentId) {
-                                        it.copy(isLiked = isLiked)
-                                    } else it
+                                comments = state.value.comments.map { comment ->
+                                    if (comment.id == parentId) {
+                                        comment.copy(
+                                            isLiked = isLiked,
+                                            likeCount = if (comment.isLiked) {
+                                                comment.likeCount - 1
+                                            } else comment.likeCount + 1
+                                        )
+                                    } else comment
                                 }
                             )
                         }

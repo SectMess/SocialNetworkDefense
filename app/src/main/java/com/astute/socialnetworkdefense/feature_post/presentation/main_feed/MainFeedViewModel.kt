@@ -5,9 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.astute.socialnetworkdefense.core.util.Event
-import com.astute.socialnetworkdefense.core.util.ParentType
-import com.astute.socialnetworkdefense.core.util.Resource
+import com.astute.socialnetworkdefense.core.domain.models.Post
+import com.astute.socialnetworkdefense.core.presentation.PagingState
+import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
+import com.astute.socialnetworkdefense.core.util.*
 import com.astute.socialnetworkdefense.feature_post.domain.use_case.PostUseCases
 import com.astute.socialnetworkdefense.feature_post.presentation.person_list.PostEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,56 +19,79 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainFeedViewModel @Inject constructor(
-    private val postUseCases: PostUseCases
-) : ViewModel() {
+    private val postUseCases: PostUseCases,
+    private val postLiker: PostLiker
 
-    private val _state = mutableStateOf(MainFeedState())
-    val state: State<MainFeedState> = _state
+) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<Event>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    val posts = postUseCases.getPostsForFollowsUseCase()
-        .cachedIn(viewModelScope)
+    private val _pagingState = mutableStateOf<PagingState<Post>>(PagingState())
+    val pagingState: State<PagingState<Post>> = _pagingState
+
+    private val paginator = DefaultPaginator(
+        onLoadUpdated = { isLoading ->
+            _pagingState.value = pagingState.value.copy(
+                isLoading = isLoading
+            )
+        },
+        onRequest = { page ->
+            postUseCases.getPostsForFollows(page = page)
+        },
+        onSuccess = { posts ->
+            _pagingState.value = pagingState.value.copy(
+                items = pagingState.value.items + posts,
+                endReached = posts.isEmpty(),
+                isLoading = false
+            )
+        },
+        onError = { uiText ->
+            _eventFlow.emit(UiEvent.ShowSnackbar(uiText))
+        }
+    )
+
+    init {
+        loadNextPosts()
+    }
 
     fun onEvent(event: MainFeedEvent) {
-        when(event) {
-            is MainFeedEvent.LoadMorePosts -> {
-                _state.value = state.value.copy(
-                    isLoadingNewPosts = true
-                )
-            }
-            is MainFeedEvent.LoadedPage -> {
-                _state.value = state.value.copy(
-                    isLoadingFirstTime = false,
-                    isLoadingNewPosts = false
-                )
-            }
+        when (event) {
+
             is MainFeedEvent.LikedPost -> {
+                toggleLikeForParent(event.postId)
 
             }
         }
     }
+
+    fun loadNextPosts() {
+        viewModelScope.launch {
+            paginator.loadNextItems()
+        }
+    }
+
 
     private fun toggleLikeForParent(
         parentId: String,
-        isLiked: Boolean
     ) {
         viewModelScope.launch {
-            val result = postUseCases.toggleLikeForParent(
+            postLiker.toggleLike(
+                posts = pagingState.value.items,
                 parentId = parentId,
-                parentType = ParentType.Post.type,
-                isLiked = isLiked
+                onRequest = { isLiked ->
+                    postUseCases.toggleLikeForParent(
+                        parentId = parentId,
+                        parentType = ParentType.Post.type,
+                        isLiked = isLiked
+                    )
+                },
+                onStateUpdated = { posts ->
+                    _pagingState.value = pagingState.value.copy(
+                        items = posts
+                    )
+                }
             )
-            when(result) {
-                is Resource.Success -> {
-                    _eventFlow.emit(PostEvent.OnLiked)
-                }
-                is Resource.Error -> {
-
-                }
-            }
         }
     }
-
 }

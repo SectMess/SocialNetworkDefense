@@ -3,8 +3,12 @@ package com.astute.socialnetworkdefense.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import coil.ImageLoader
+import coil.decode.SvgDecoder
 import com.astute.socialnetworkdefense.core.domain.use_case.GetOwnUserIdUseCase
 import com.astute.socialnetworkdefense.core.util.Constants
+import com.astute.socialnetworkdefense.core.util.DefaultPostLiker
+import com.astute.socialnetworkdefense.core.util.PostLiker
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -45,6 +49,24 @@ object AppModule {
             }
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideImageLoader(app: Application): ImageLoader {
+        return ImageLoader.Builder(app)
+            .crossfade(true)
+            .componentRegistry {
+                add(SvgDecoder(app))
+            }
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePostLiker(): PostLiker {
+        return DefaultPostLiker()
+    }
+
 
     @Provides
     @Singleton

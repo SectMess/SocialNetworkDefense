@@ -16,6 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
 import com.astute.socialnetworkdefense.R
 import com.astute.socialnetworkdefense.core.domain.models.User
 import com.astute.socialnetworkdefense.core.presentation.util.UiEvent
@@ -31,10 +33,12 @@ import com.astute.socialnetworkdefense.presentation.ui.theme.SpaceMedium
 import kotlinx.coroutines.flow.collectLatest
 
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun PersonListScreen(
     scaffoldState: ScaffoldState,
+    imageLoader: ImageLoader,
     onNavigate: (String) -> Unit = {},
     onNavigateUp: () -> Unit = {},
     viewModel: PersonListViewModel = hiltViewModel()
@@ -78,6 +82,7 @@ fun PersonListScreen(
                 items(state.users) { user ->
                     UserProfileItem(
                         user = user,
+                        imageLoader = imageLoader,
                         actionIcon = {
                             Icon(
                                 imageVector = if (user.isFollowing) {
